@@ -1,0 +1,4 @@
+---
+
+# enable spamhaus droplist feature
+iptables_enable_droplist: true

@@ -1,0 +1,8 @@
+---
+
+- name: setup rules
+  import_tasks: rules.yml
+
+- name: setup DROP list
+  import_tasks: droplist.yml
+  when: iptables_enable_droplist == true

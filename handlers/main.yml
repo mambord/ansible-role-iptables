@@ -1,0 +1,12 @@
+---
+
+- name: reload iptables
+  shell: /sbin/iptables-restore < /etc/iptables/rules.v4
+  become: yes
+
+- name: spamhaus-droplist
+  systemd:
+    name: spamhaus-droplist
+    state: started
+    enabled: yes
+  become: yes

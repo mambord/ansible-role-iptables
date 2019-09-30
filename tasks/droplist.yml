@@ -1,0 +1,25 @@
+---
+
+- name: install spamhaus-droplist script
+  copy:
+    src: files/usr/local/sbin/spamhaus-droplist
+    dest: /usr/local/sbin/spamhaus-droplist
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+
+- name: configure spamhaus-droplist systemd service
+  copy:
+    src: files/etc/systemd/system/spamhaus-droplist.service
+    dest: /etc/systemd/system/spamhaus-droplist.service
+  notify:
+    - spamhaus-droplist
+
+- name: setup spamhaus-droplist cronjob
+  cron:
+    name: spamhaus-droplist
+    minute: '0'
+    hour: '*/12'
+    job: /usr/local/sbin/spamhaus-droplist >/dev/null 2>&1
+    user: root
+    cron_file: spamhaus-droplist
