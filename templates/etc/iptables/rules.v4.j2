@@ -35,13 +35,13 @@
 {% endfor %}
 
 {% if iptables_blocklist is defined %}
-{% for address in iptables_blocklist %}
 ##
 # manual blocklist with logging
 ##
 
--N  manual-droplist
+-N manual-droplist
 -I INPUT 1 -j manual-droplist
+{% for address in iptables_blocklist %}
 -A manual-droplist -s {{ address }} -j LOG --log-prefix "[MANUAL BLOCK] " -m limit --limit 3/min --limit-burst 10
 -A manual-droplist -s {{ address }} -j DROP
 {% endfor %}
