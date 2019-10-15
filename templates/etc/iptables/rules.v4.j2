@@ -1,4 +1,4 @@
-# This file is {{ ansible_managed }}
+# {{ ansible_managed }}
 
 *filter
 
@@ -14,17 +14,14 @@
 # generic rules for all hosts
 ##
 
-# allow internal traffic
--A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+# allow loopback
+-A INPUT -i lo -j ACCEPT
 
 # allow icmp echo requests
 -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
 
-# drop non-conforming packets
--A INPUT -m conntrack --ctstate INVALID -j DROP
-
-# block remote packets pretending to be from a loopback address
--A INPUT -s 127.0.0.0/8 ! -i lo -j DROP
+# allow established connections
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 ##
 # host specific rules
@@ -34,16 +31,16 @@
 -A INPUT -p {{ rule.protocol }} {% if rule.interface is defined %}-i {{ rule.interface }} {% endif %}{% if rule.source is defined %}-s {{ rule.source }} {% endif %}--dport {{ rule.destination_port }} {% if rule.match is defined %}-m {{ rule.match }} {{ rule.match_options }} {% endif %}-j {{ rule.jump }}
 {% endfor %}
 
-{% if iptables_blocklist is defined %}
+{% if iptables_user_droplist is defined %}
 ##
-# manual blocklist with logging
+# user-blocklist with logging
 ##
 
--N manual-droplist
--I INPUT 1 -j manual-droplist
-{% for address in iptables_blocklist %}
--A manual-droplist -s {{ address }} -j LOG --log-prefix "[MANUAL BLOCK] " -m limit --limit 3/min --limit-burst 10
--A manual-droplist -s {{ address }} -j DROP
+-N {{ iptables_user_droplist_chain }}
+-I INPUT 1 -j {{ iptables_user_droplist_chain }}
+{% for address in iptables_user_droplist %}
+-A {{ iptables_user_droplist_chain }} -s {{ address }} -j LOG --log-prefix "[USER BLOCK] " -m limit --limit 3/min --limit-burst 10
+-A {{ iptables_user_droplist_chain }} -s {{ address }} -j DROP
 {% endfor %}
 {% endif %}
 COMMIT

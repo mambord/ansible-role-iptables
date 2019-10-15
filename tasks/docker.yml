@@ -1,0 +1,16 @@
+---
+
+- name: install docker-iptables.service
+  copy:
+    src: files/etc/systemd/system/docker-iptables.service
+    dest: /etc/systemd/system/docker-iptables.service
+
+- name: install docker-iptables script
+  template:
+    src: templates/usr/local/sbin/docker-iptables.j2
+    dest: /usr/local/sbin/docker-iptables
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
+  notify:
+    - docker-iptables

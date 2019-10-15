@@ -1,0 +1,11 @@
+[Unit]
+Description=docker-iptables
+Wants=multi-user.target
+After=docker.service spamhaus-droplist.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/docker-iptables
+
+[Install]
+WantedBy=multi-user.target

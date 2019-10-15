@@ -1,10 +1,27 @@
 ---
 
+- name: gather service facts
+  service_facts:
+
 - name: reload iptables
   shell: /sbin/iptables-restore < /etc/iptables/rules.v4
 
 - name: spamhaus-droplist
   systemd:
     name: spamhaus-droplist
-    state: started
+    state: restarted
     enabled: yes
+  when: iptables_enable_spamhaus_droplist
+
+- name: docker
+  systemd:
+    name: docker
+    state: restarted
+  when: "'docker' in ansible_facts.services"
+
+- name: docker-iptables
+  systemd:
+    name: docker-iptables
+    state: restarted
+    enabled: yes
+  when: ( iptables_docker_allow is defined ) or iptables_enable_spamhaus_droplist_docker or iptables_enable_user_droplist_docker

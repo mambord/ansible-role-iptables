@@ -1,0 +1,37 @@
+#!/bin/bash 
+
+# {{ ansible_managed }}
+
+# path to iptables
+IPTABLES={{ iptables_binary_path }};
+
+{% if iptables_docker_allow is defined %}
+
+# test if chain is existent
+$IPTABLES -L {{ iptables_docker_chain }} -n &> /dev/null
+
+if [ $? -eq 1 ]; then
+    # create {{iptables_docker_chain}} and insert 
+    $IPTABLES -N {{ iptables_docker_chain }}
+    $IPTABLES -I FORWARD 1 -j {{ iptables_docker_chain }}
+else
+    $IPTABLES -F {{ iptables_docker_chain }}
+fi
+
+{% for rule in iptables_docker_allow %}
+$IPTABLES -I {{ iptables_docker_chain }} {% if rule.interface is defined %}-i {{ rule.interface }} {% endif %}-p {{ rule.protocol }} {% if rule.source is defined %}-s {{ rule.source }} {% endif %}--dport {{ rule.destination_port }} -j RETURN
+{% endfor %}
+
+$IPTABLES -I {{ iptables_docker_chain }} -m conntrack --ctstate RELATED,ESTABLISHED -j RETURN
+$IPTABLES -A {{ iptables_docker_chain }} -j DROP
+{% endif %}
+
+{% if iptables_enable_spamhaus_droplist_docker %}
+# insert {{ iptables_spamhaus_droplist_chain }} into FORWARD chain
+$IPTABLES -I FORWARD 1 -j {{ iptables_spamhaus_droplist_chain }}
+{% endif %}
+
+{% if iptables_enable_user_droplist_docker and ( iptables_user_droplist is defined ) %}
+# insert {{ iptables_user_droplist_chain }} into FORWARD chain
+$IPTABLES -I FORWARD 1 -j {{ iptables_user_droplist_chain }}
+{% endif %}

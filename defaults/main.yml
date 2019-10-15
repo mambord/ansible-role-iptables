@@ -1,4 +1,40 @@
 ---
 
+#####################
+## enable, disable features
+
 # enable spamhaus droplist feature
-iptables_enable_droplist: true
+iptables_enable_spamhaus_droplist: true
+
+# enable user droplist for docker host
+iptables_enable_user_droplist_docker: false
+
+# enable spamhaus droplist for docker host
+iptables_enable_spamhaus_droplist_docker: false
+
+#####################
+## iptables settings
+
+# path to iptables binary
+iptables_binary_path: '/sbin/iptables'
+
+#####################
+## user-droplist
+
+# iptables droplist chain name
+iptables_user_droplist_chain: 'user-droplist'
+
+#####################
+## spamhaus droplist settings
+
+# droplist url
+iptables_spamhaus_droplist_url: 'www.spamhaus.org/drop/drop.lasso'
+
+# iptables droplist chain name
+iptables_spamhaus_droplist_chain: 'spamhaus-droplist'
+
+#####################
+## docker specific
+
+# docker user specified rules chain name
+iptables_docker_chain: 'DOCKER-USER'

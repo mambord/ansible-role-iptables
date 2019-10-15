@@ -1,8 +1,8 @@
 ---
 
 - name: install spamhaus-droplist script
-  copy:
-    src: files/usr/local/sbin/spamhaus-droplist
+  template:
+    src: templates/usr/local/sbin/spamhaus-droplist.j2
     dest: /usr/local/sbin/spamhaus-droplist
     owner: root
     group: root
