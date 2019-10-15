@@ -10,4 +10,8 @@
     src: templates/etc/iptables/rules.v4.j2
     dest: /etc/iptables/rules.v4
   notify:
+    - gather service facts
     - reload iptables
+    - spamhaus-droplist
+    - docker
+    - docker-iptables
