@@ -13,4 +13,8 @@
     group: root
     mode: u=rwx,g=rx,o=rx
   notify:
+    - gather service facts
+    - reload iptables
+    - spamhaus-droplist
+    - docker
     - docker-iptables

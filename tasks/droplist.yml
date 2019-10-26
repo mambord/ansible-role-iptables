@@ -7,13 +7,17 @@
     owner: root
     group: root
     mode: u=rwx,g=rx,o=rx
+  notify:
+    - gather service facts
+    - reload iptables
+    - spamhaus-droplist
+    - docker
+    - docker-iptables
 
 - name: configure spamhaus-droplist systemd service
   copy:
     src: files/etc/systemd/system/spamhaus-droplist.service
     dest: /etc/systemd/system/spamhaus-droplist.service
-  notify:
-    - spamhaus-droplist
 
 - name: setup spamhaus-droplist cronjob
   cron:

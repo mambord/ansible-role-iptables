@@ -37,18 +37,19 @@ iptables_enable_spamhaus_droplist: true
 ```
 
 ## docker-iptables
-The docker-iptables feature lets you manage your own rules for accessing docker container. Rules are written with a script ``/usr/local/sbin/docker-iptables`` as systemd service after docker started. The feature is enabled by specifying rules:
+The docker-iptables feature lets you manage source acl's for accessing docker container. Rules are written with a script ``/usr/local/sbin/docker-iptables`` as systemd service after docker started. The feature is enabled by specifying rules:
 
 ```yaml
-iptables_docker_allow:
+iptables_docker_source_acl:
   - rule:
-    interface: eth0                         (optional)
-    protocol: tcp
-    source: 192.168.168.0/24                (optional)
-    destination_port: 80
+    interface: eth0
+    protocol: tcp               (optional)
+    source: 192.168.168.0/24
+    destination_port: 80        (optional)
 ```
 
-``/usr/local/sbin/docker-iptables`` creates a chain, default named ``DOCKER-USER``, and inserts it into the FORWARD chain before all docker managed chains. User defined rules and established connections jump to RETURN target. Everything else jumps to DROP target.
+``/usr/local/sbin/docker-iptables`` creates a chain, default named ``DOCKER-USER``, and inserts it into the FORWARD chain before all docker managed chains. Rules defined in ``iptables_docker_source_acl`` create negated rules as explained at (https://docs.docker.com/network/iptables/).
+
 
 ```yaml
 # docker user specified rules chain name
