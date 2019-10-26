@@ -5,7 +5,7 @@
 # path to iptables
 IPTABLES={{ iptables_binary_path }};
 
-{% if iptables_docker_allow is defined %}
+{% if iptables_docker_source_acl is defined %}
 
 # test if chain is existent
 $IPTABLES -L {{ iptables_docker_chain }} -n &> /dev/null
@@ -18,12 +18,11 @@ else
     $IPTABLES -F {{ iptables_docker_chain }}
 fi
 
-{% for rule in iptables_docker_allow %}
-$IPTABLES -I {{ iptables_docker_chain }} {% if rule.interface is defined %}-i {{ rule.interface }} {% endif %}-p {{ rule.protocol }} {% if rule.source is defined %}-s {{ rule.source }} {% endif %}--dport {{ rule.destination_port }} -j RETURN
+{% for rule in iptables_docker_source_acl %}
+$IPTABLES -I {{ iptables_docker_chain }} -i {{ rule.interface }} {% if rule.protocol is defined and rule.destination_port is defined %}-p {{ rule.protocol }} {% endif %}! -s {{ rule.source }} {% if rule.destination_port is defined and rule.protocol is defined %}--dport {{ rule.destination_port }}{% endif %} -j DROP
 {% endfor %}
 
-$IPTABLES -I {{ iptables_docker_chain }} -m conntrack --ctstate RELATED,ESTABLISHED -j RETURN
-$IPTABLES -A {{ iptables_docker_chain }} -j DROP
+$IPTABLES -A {{ iptables_docker_chain }} -j RETURN
 {% endif %}
 
 {% if iptables_enable_spamhaus_droplist_docker %}
