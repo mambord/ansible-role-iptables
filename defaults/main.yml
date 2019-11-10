@@ -4,7 +4,7 @@
 ## enable, disable features
 
 # enable spamhaus droplist feature
-iptables_enable_spamhaus_droplist: true
+iptables_enable_spamhaus_droplist: false
 
 # enable user droplist for docker host
 iptables_enable_user_droplist_docker: false
