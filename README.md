@@ -30,10 +30,10 @@ iptables_user_droplist:
   - 58.242.0.0/16
 ```
 ## spamhaus-droplist
-The spamhaus-droplist feature is enabled by default. Dropped packets by its rules are logged to syslog (tagged with ``[SPAMHAUS BLOCK]``).
+The spamhaus-droplist feature is disabled by default. Dropped packets by its rules are logged to syslog (tagged with ``[SPAMHAUS BLOCK]``).
 ```yaml
 # enable spamhaus droplist feature
-iptables_enable_spamhaus_droplist: true
+iptables_enable_spamhaus_droplist: false
 ```
 
 ## docker-iptables
@@ -43,9 +43,9 @@ The docker-iptables feature lets you manage source acl's for accessing docker co
 iptables_docker_source_acl:
   - rule:
     interface: eth0
-    protocol: tcp               (optional)
+    protocol: tcp
     source: 192.168.168.0/24
-    destination_port: 80        (optional)
+    destination_port: 80
 ```
 
 ``/usr/local/sbin/docker-iptables`` creates a chain, default named ``DOCKER-USER``, and inserts it into the FORWARD chain before all docker managed chains. Rules defined in ``iptables_docker_source_acl`` create negated rules as explained at (https://docs.docker.com/network/iptables/).
