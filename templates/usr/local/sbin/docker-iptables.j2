@@ -27,10 +27,12 @@ $IPTABLES -A {{ iptables_docker_chain }} -j RETURN
 
 {% if iptables_enable_spamhaus_droplist_docker %}
 # insert {{ iptables_spamhaus_droplist_chain }} into {{ iptables_docker_chain }} chain
+$IPTABLES -N {{ iptables_spamhaus_droplist_chain }}
 $IPTABLES -I {{ iptables_docker_chain }} 1 -j {{ iptables_spamhaus_droplist_chain }}
 {% endif %}
 
 {% if iptables_enable_user_droplist_docker and ( iptables_user_droplist is defined ) %}
 # insert {{ iptables_user_droplist_chain }} into {{ iptables_docker_chain }} chain
+$IPTABLES -N {{ iptables_user_droplist_chain }}
 $IPTABLES -I {{ iptables_docker_chain }} 1 -j {{ iptables_user_droplist_chain }}
 {% endif %}
