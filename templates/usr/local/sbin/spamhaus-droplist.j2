@@ -28,9 +28,6 @@ else
     # create a new chain set
     $IPTABLES -N $CHAIN
 
-    # tie chain to input rules so it runs
-    $IPTABLES -I INPUT 1 -j $CHAIN
-
     echo "Chain not detected. Creating new chain and adding Spamhaus list...."
 
 fi;

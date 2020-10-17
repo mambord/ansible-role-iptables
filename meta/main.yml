@@ -18,5 +18,7 @@ galaxy_info:
     - 'iptables'
     - 'spamhaus'
     - 'firewall'
+    - 'droplist'
+    - 'docker'
   
 dependencies: []

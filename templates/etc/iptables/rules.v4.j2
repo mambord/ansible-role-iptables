@@ -43,6 +43,15 @@
 -A {{ iptables_user_droplist_chain }} -s {{ address }} -j DROP
 {% endfor %}
 {% endif %}
+
+{% if iptables_enable_spamhaus_droplist %}
+##
+# spamhaus-droplist
+##
+-N {{ iptables_spamhaus_droplist_chain }}
+-I INPUT 1 -j {{ iptables_spamhaus_droplist_chain }}
+{% endif %}
+
 COMMIT
 
 *nat

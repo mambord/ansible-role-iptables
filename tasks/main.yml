@@ -1,13 +1,13 @@
 ---
 
-- name: setup rules user rules
-  import_tasks: rules.yml
-  when: iptables_rules is defined
-
 - name: setup spamhaus DROP list
   import_tasks: droplist.yml
-  when: iptables_enable_spamhaus_droplist
+  when: iptables_enable_spamhaus_droplist or iptables_enable_spamhaus_droplist_docker
+
+- name: setup rules user rules
+  import_tasks: rules.yml
+  when: iptables_rules is defined 
 
 - name: setup Docker rules
   import_tasks: docker.yml
-  when: ( docker_allow_rules is defined ) or iptables_enable_spamhaus_droplist_docker or iptables_enable_user_droplist_docker
+  when: ( docker_allow_rules is defined ) or iptables_enable_spamhaus_droplist_docker or iptables_enable_user_droplist_docker  
